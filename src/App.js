@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import axios from "axios";
+import { BallTriangle } from  'react-loader-spinner'
 
-function App() {
+const App = () => {
+  const[data, setData] = useState([]);
+  const[loader, setLoader] = useState(true);
+
+    const getRequest = async()=>{
+      const {data} = await axios.get("https://fakestoreapi.com/products");
+      if(data)
+      {
+        setLoader(false)
+        setData(data);
+      }else{
+        setLoader(true)
+      }
+    }
+
+    useEffect(()=>{
+      const fetchData = ()=>{
+        getRequest()
+      }
+      fetchData()
+    },[])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <div style={{position:"absolute", left:"45%", top:"240px"}}>
+        <BallTriangle
+          height={100}
+          width={100}
+          radius={5}
+          color="red"
+          ariaLabel="ball-triangle-loading"
+          wrapperClass={{}}
+          wrapperStyle=""
+          visible={loader} />
+      </div>
+      <div style={{paddingLeft:"10%", paddingRight:"10%"}}>
+        {
+          data.map((item)=>{
+            return <h1 style={{backgroundColor: "black", color:"white", marginTop: "20px"}}>{item.title}</h1>
+          })
+        }
+      </div>
+    </>
+  )
 }
 
-export default App;
+export default App
